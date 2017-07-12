@@ -33,6 +33,7 @@ for cur_page in range(1, int(preview_page_cnt)+1):
             cur_page = requests.get(pic_link, headers = header)
             soup = BeautifulSoup(cur_page.text, parser)
             pic_src = soup.find('div', 'main-image').find('img')['src']
+            
             print(pic_src)
 
 # main_page = requests.get(url, header)
