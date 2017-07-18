@@ -19,8 +19,11 @@ header = {
 # 保存图片
 def save_file(data, pic_name):
     save_path = pic_name
-    with open(save_path, 'wb') as f:
-        f.write(data)
+    if os.path.exists(save_path):
+        print('Photo exists')
+    else:
+        with open(save_path, 'wb') as f:
+            f.write(data)
 
 # 创建目录
 def create_dir(pic_dir, pic_detail_name):
@@ -31,7 +34,7 @@ def create_dir(pic_dir, pic_detail_name):
         os.mkdir(pic_path)
     return pic_path
 
-
+# 下载
 def downlaod(url, headers, try_nums=2):
     '''下载，可以重连，默认次数为2
     '''
@@ -44,6 +47,7 @@ def downlaod(url, headers, try_nums=2):
             downlaod(url, header, try_nums -1)
     return html
 
+# 图片下载
 def image_src_Downlaod(url, headers, try_nums=2):
     '''下载，可以重连，默认次数为2
     '''
@@ -61,6 +65,7 @@ def image_src_Downlaod(url, headers, try_nums=2):
 for cur_page in range(1, int(preview_page_cnt)+1):
     cur_url = url + str(cur_page)
     cur_page = requests.get(cur_url, headers=header)
+
     # 解析网页
     soup = BeautifulSoup(cur_page.text, parser)
     preview_link_list = soup.find(id='pins').find_all('a', target='_blank')[1::2]
