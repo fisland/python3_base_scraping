@@ -7,7 +7,7 @@ import html5lib
 import os
 import time
 
-preview_page_cnt = 2
+preview_page_cnt = 70
 parser = 'html.parser'
 cur_path = os.getcwd() + '/'
 
@@ -61,3 +61,31 @@ for cur_page in range(1, int(preview_page_cnt+1)):
         link = link['href']
         dir_name = link.strip('http://www.mmjpg.com/mm/').replace('?','')
         print(link, dir_name)
+        # 获取图片数量
+        pri_cnt = soup.find('div', class_='page').find_all('a')[5].get_text()
+        # 创建目录
+        pic_path = create_dir(dir_name, dir_detail_name)
+        # 进入目录，开始下载
+        os.chdir(pic_path)
+        print('下载'+dir_name+'...')
+        # 遍历获取每页图片的地址
+        for pic_index in range(1, int(pri_cnt)+1):
+            pic_link = link+'/'+str(pic_index)
+            # cur_page = requests.get(pic_link, headers = header)
+            
+            cur_page = image_src_Downlaod(pic_link, header)
+            soup = BeautifulSoup(cur_page.text, parser)
+            try:
+                pic_src = soup.find('div', class_='content').find('img')['src']
+            except AttributeError as e:
+                print(e)
+
+            pic_name = pic_src.split('/')[-1]
+
+            save_file(requests.get(pic_src, headers = header).content, pic_name)
+
+            print(pic_src)
+            time.sleep(0.1)
+
+        os.chdir(cur_path)
+    print('爬虫完成')
